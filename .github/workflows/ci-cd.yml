@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -28,6 +30,15 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
+      - name: Verify Gradle wrapper
+        run: |
+          echo "Checking Gradle wrapper files..."
+          ls -la gradle/wrapper/
+          echo "Gradle wrapper jar size:"
+          wc -c gradle/wrapper/gradle-wrapper.jar
+          echo "Java version:"
+          java -version
 
       - name: Compile and build
         run: ./gradlew clean build -x test
@@ -71,6 +82,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
