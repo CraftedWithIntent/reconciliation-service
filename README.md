@@ -53,15 +53,31 @@ reconciliation:
     {domain-name}:
       name: {domain-name}
       source:
+        type: postgresql|oracle|mysql|sqlserver
         schema: {source_schema}
         table: {source_table}
         viewSuffix: _with_hash      # Views must be named {table}{viewSuffix}
+        idFields:                   # Composite ID fields
+        - name: id_field_1
+          type: integer|string|date|etc
+        hashFields:                 # Fields for hash comparison (order matters)
+        - name: field1
+          type: type1
+        - name: field2
+          type: type2
       target:
+        type: postgresql|oracle|mysql|sqlserver
         schema: {target_schema}
         table: {target_table}
         viewSuffix: _with_hash
-      hashFields: [field1, field2, field3, ...]  # Fields to include in hash
-      idField: id                                  # Unique identifier field
+        idFields:
+        - name: id_field_1
+          type: integer|string|date|etc
+        hashFields:
+        - name: field1
+          type: type1
+        - name: field2
+          type: type2
       caseSensitive: false
       sloTarget: 95.0                             # Optional: Verdict threshold % (default: 95.0)
       varianceThreshold: 1.0                      # Optional: Field variance threshold % (default: 1.0)
@@ -77,15 +93,31 @@ reconciliation:
     my-domain:
       name: my-domain
       source:
+        type: postgresql
         schema: source_schema
         table: source_table
         viewSuffix: _with_hash
+        idFields:
+        - name: id
+          type: integer
+        hashFields:
+        - name: field1
+          type: string
+        - name: field2
+          type: decimal
       target:
+        type: postgresql
         schema: target_schema
         table: target_table
         viewSuffix: _with_hash
-      hashFields: [field1, field2, field3]
-      idField: id
+        idFields:
+        - name: id
+          type: integer
+        hashFields:
+        - name: field1
+          type: string
+        - name: field2
+          type: decimal
       caseSensitive: false
       sloTarget: 95.0              # Optional: Sets verdict threshold (default: 95.0%)
       varianceThreshold: 1.0       # Optional: Field variance threshold (default: 1.0%)
@@ -135,19 +167,39 @@ reconciliation:
     sales-to-accounting:
       name: sales-to-accounting
       source:
+        type: postgresql
         schema: sales_schema
         table: sales_orders
         viewSuffix: _with_hash
+        idFields:
+        - name: id
+          type: uuid
+        hashFields:
+        - name: customer_id
+          type: text
+        - name: order_amount
+          type: numeric
+        - name: order_date
+          type: date
+        - name: line_item_id
+          type: text
       target:
+        type: postgresql
         schema: accounting_schema
         table: accounting_records
         viewSuffix: _with_hash
-      hashFields:
-        - customer_id
-        - order_amount  # maps to 'amount' in target
-        - order_date    # maps to 'trans_date' in target
-        - line_item_id
-      idField: id
+        idFields:
+        - name: id
+          type: uuid
+        hashFields:
+        - name: customer_id
+          type: text
+        - name: amount
+          type: numeric
+        - name: trans_date
+          type: date
+        - name: line_item_id
+          type: text
       caseSensitive: false
       sloTarget: 95.0              # 95% match = NOISY, <95% = MATERIAL
       varianceThreshold: 1.0       # Fields >1% variance = MATERIAL
