@@ -1,0 +1,176 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.5'
+    id 'io.spring.dependency-management' version '1.1.3'
+    id 'com.diffplug.spotless' version '6.22.0'
+}
+
+group = 'com.reconcile'
+version = '1.0.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot Starters (exclude all logging frameworks)
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'ch.qos.logback'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa') {
+        exclude group: 'ch.qos.logback'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-jdbc') {
+        exclude group: 'ch.qos.logback'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+    
+    // Use standard SLF4J logging
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'ch.qos.logback:logback-classic'
+    
+    // JDBI for SQL object mapping
+    implementation('org.jdbi:jdbi3-core:3.41.3') {
+        exclude group: 'ch.qos.logback'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+    implementation('org.jdbi:jdbi3-sqlobject:3.41.3') {
+        exclude group: 'ch.qos.logback'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
+    
+    // Apache Spark for distributed reconciliation - supports multiple data sources including Oracle
+    implementation('org.apache.spark:spark-sql_2.13:3.5.0') {
+        exclude group: 'ch.qos.logback'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+        exclude group: 'org.glassfish.jersey.containers'
+        exclude group: 'org.glassfish.jersey.core'
+    }
+    implementation('org.apache.spark:spark-core_2.13:3.5.0') {
+        exclude group: 'ch.qos.logback'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+        exclude group: 'org.glassfish.jersey.containers'
+        exclude group: 'org.glassfish.jersey.core'
+    }
+    
+    // Jakarta Servlet API bridge for Spark compatibility with Spring Boot 3.x
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    // Also provide javax.servlet for Spark's metrics system
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    // Enhanced Apache Commons codec
+    implementation 'commons-codec:commons-codec:1.15'
+    
+    // PostgreSQL Driver
+    runtimeOnly 'org.postgresql:postgresql:42.6.0'
+    // Oracle Driver (for heterogeneous data source support) - uncomment if you have existing ojdbc
+    // runtimeOnly files('libs/ojdbc11.jar')
+    // Or use Maven Central Oracle Driver:
+    // runtimeOnly 'com.oracle.database.jdbc:ojdbc11:23.2.0.0'
+    
+    // Lombok for reducing boilerplate
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    
+    // JSON Processing
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    
+    // OpenTelemetry - Observability (tracing, metrics, logs)
+    // Core APIs for distributed tracing
+    implementation 'io.opentelemetry:opentelemetry-api:1.32.0'
+    implementation 'io.opentelemetry:opentelemetry-sdk:1.32.0'
+    implementation 'io.opentelemetry:opentelemetry-sdk-common:1.32.0'
+    implementation 'io.opentelemetry:opentelemetry-exporter-jaeger:1.32.0'
+    
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'junit:junit:4.13.2'
+    
+    // Testcontainers for integration tests
+    testImplementation 'org.testcontainers:testcontainers:1.19.3'
+    testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
+    testImplementation 'org.testcontainers:postgresql:1.19.3'
+    testImplementation 'org.testcontainers:oracle-xe:1.19.3'
+}
+
+tasks.named('test') {
+    useJUnitPlatform {
+        excludeTags 'integration'
+    }
+}
+
+// Task to run integration tests only (requires Docker)
+task integrationTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'integration'
+    }
+    shouldRunAfter test
+    
+    // Configure Docker access for macOS Docker Desktop
+    // These environment variables are passed from the shell/CI environment
+    systemProperty 'testcontainers.docker.client.strategy', 'unix'
+    systemProperty 'org.testcontainers.dockerclient.strategy', 'unix'
+}
+
+// Helper task to print classpath for external scripts
+task printClasspath {
+    doLast {
+        println sourceSets.test.runtimeClasspath.asPath
+    }
+}
+
+tasks.named('bootJar') {
+    archiveFileName = 'reconciliation-service-1.0.0.jar'
+}
+
+// Spotless - Code formatting and consistency
+spotless {
+    java {
+        target 'src/**/*.java'
+        
+        // Use Google Java Format
+        googleJavaFormat('1.17.0')
+        
+        // Remove trailing whitespace
+        trimTrailingWhitespace()
+        
+        // Use Unix line endings
+        endWithNewline()
+        
+        // Custom rules
+        custom 'Alphabetical imports', { source ->
+            // keep as-is; imports handled by googleJavaFormat
+            source
+        }
+    }
+    
+    // Format YAML files
+    yaml {
+        target 'src/**/*.yml', '*.yml', '*.yaml'
+        jackson()
+        endWithNewline()
+    }
+    
+    // Format JSON files
+    json {
+        target '**/*.json'
+        jackson()
+        endWithNewline()
+    }
+}
+
+// Snyk - Vulnerability scanning via CLI
+// Note: Snyk Gradle plugin is deprecated. Use Snyk CLI instead:
+//   npm install -g snyk
+//   snyk auth (one-time setup)
+//   snyk test (scan for vulnerabilities)
+//   snyk monitor (continuous monitoring)
+// See: https://docs.snyk.io/snyk-cli/getting-started
+
+// Task to format all code
+task formatCode {
+    dependsOn 'spotlessApply'
+    description 'Format code with Spotless'
+}

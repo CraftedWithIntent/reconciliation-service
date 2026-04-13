@@ -1,0 +1,82 @@
+---
+version: "3.9"
+services:
+  source-db:
+    image: "postgres:15-alpine"
+    container_name: "reconcile-source-db"
+    environment:
+      POSTGRES_DB: "source_db"
+      POSTGRES_USER: "${SOURCE_DB_USER:-postgres}"
+      POSTGRES_PASSWORD: "${SOURCE_DB_PASSWORD:?error - SOURCE_DB_PASSWORD must be\
+        \ set}"
+    ports:
+    - "5432:5432"
+    volumes:
+    - "source_data:/var/lib/postgresql/data"
+    - "./sql/source-db-init.sql:/docker-entrypoint-initdb.d/01-init.sql"
+    - "./sql/02-source-db-hash-view.sql:/docker-entrypoint-initdb.d/02-hash-view.sql"
+    healthcheck:
+      test:
+      - "CMD-SHELL"
+      - "pg_isready -U postgres"
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+    networks:
+    - "reconcile-network"
+  target-db:
+    image: "postgres:15-alpine"
+    container_name: "reconcile-target-db"
+    environment:
+      POSTGRES_DB: "target_db"
+      POSTGRES_USER: "${TARGET_DB_USER:-postgres}"
+      POSTGRES_PASSWORD: "${TARGET_DB_PASSWORD:?error - TARGET_DB_PASSWORD must be\
+        \ set}"
+    ports:
+    - "5433:5432"
+    volumes:
+    - "target_data:/var/lib/postgresql/data"
+    - "./sql/target-db-init.sql:/docker-entrypoint-initdb.d/01-init.sql"
+    - "./sql/02-target-db-hash-view.sql:/docker-entrypoint-initdb.d/02-hash-view.sql"
+    healthcheck:
+      test:
+      - "CMD-SHELL"
+      - "pg_isready -U postgres"
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
+    networks:
+    - "reconcile-network"
+  reconciliation-app:
+    build:
+      context: "."
+      dockerfile: "docker/Dockerfile"
+    container_name: "reconcile-app"
+    environment:
+      SPRING_DATASOURCE_SOURCE_URL: "jdbc:postgresql://source-db:5432/source_db"
+      SPRING_DATASOURCE_SOURCE_USERNAME: "${SOURCE_DB_USER:-postgres}"
+      SPRING_DATASOURCE_SOURCE_PASSWORD: "${SOURCE_DB_PASSWORD:?error - SOURCE_DB_PASSWORD\
+        \ must be set}"
+      SPRING_DATASOURCE_SOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+      SPRING_DATASOURCE_TARGET_URL: "jdbc:postgresql://target-db:5432/target_db"
+      SPRING_DATASOURCE_TARGET_USERNAME: "${TARGET_DB_USER:-postgres}"
+      SPRING_DATASOURCE_TARGET_PASSWORD: "${TARGET_DB_PASSWORD:?error - TARGET_DB_PASSWORD\
+        \ must be set}"
+      SPRING_DATASOURCE_TARGET_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+      SERVER_PORT: 8080
+    ports:
+    - "8080:8080"
+    depends_on:
+      source-db:
+        condition: "service_healthy"
+      target-db:
+        condition: "service_healthy"
+    networks:
+    - "reconcile-network"
+    restart: "on-failure"
+volumes:
+  source_data: null
+  target_data: null
+networks:
+  reconcile-network:
+    driver: "bridge"

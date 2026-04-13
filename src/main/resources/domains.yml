@@ -1,0 +1,117 @@
+---
+reconciliation:
+  domains:
+    vendor-invoices:
+      name: "vendor-invoices"
+      source:
+        type: "postgresql"
+        schema: "source_schema"
+        table: "vendor_invoices"
+        viewSuffix: "_with_hash"
+        idFields:
+        - name: "vendor_id"
+          type: "string"
+        - name: "invoice_date"
+          type: "date"
+        hashFields:
+        - name: "vendor_name"
+          type: "string"
+        - name: "invoice_amount"
+          type: "decimal"
+        - name: "billing_cycle"
+          type: "string"
+        - name: "line_item_id"
+          type: "integer"
+        joins:
+        - table: "vendor_master"
+          joinType: "LEFT"
+          joinKeyId:
+            name: "vendor_id"
+            type: "integer"
+          joinedKeyId:
+            name: "id"
+            type: "integer"
+      target:
+        type: "postgresql"
+        schema: "target_schema"
+        table: "internal_ledger"
+        viewSuffix: "_with_hash"
+        idFields:
+        - name: "supplier_id"
+          type: "integer"
+        - name: "bill_date"
+          type: "date"
+        hashFields:
+        - name: "vendor"
+          type: "string"
+        - name: "amount"
+          type: "numeric"
+        - name: "billing_period"
+          type: "string"
+        - name: "item_id"
+          type: "bigint"
+        joins:
+        - table: "vendor_reference"
+          joinType: "LEFT"
+          joinKeyId:
+            name: "vendor_id"
+            type: "uuid"
+          joinedKeyId:
+            name: "vendor_uuid"
+            type: "uuid"
+      caseSensitive: false
+    expense-reports:
+      name: "expense-reports"
+      source:
+        type: "postgresql"
+        schema: "source_schema"
+        table: "expense_reports"
+        viewSuffix: "_with_hash"
+        idFields:
+        - name: "exp_id"
+          type: "string"
+        - name: "exp_month"
+          type: "date"
+        hashFields:
+        - name: "emp_code"
+          type: "string"
+        - name: "expense_amount"
+          type: "decimal"
+        - name: "entry_date"
+          type: "timestamp"
+        joins:
+        - table: "employee_master"
+          joinType: "INNER"
+          joinKeyId:
+            name: "emp_code"
+            type: "string"
+          joinedKeyId:
+            name: "employee_code"
+            type: "string"
+      target:
+        type: "oracle"
+        schema: "target_schema"
+        table: "expense_ledger"
+        viewSuffix: "_with_hash"
+        idFields:
+        - name: "expense_pk"
+          type: "integer"
+        - name: "expense_date"
+          type: "date"
+        hashFields:
+        - name: "employee_id"
+          type: "integer"
+        - name: "amount"
+          type: "numeric"
+        - name: "created_date"
+          type: "date"
+        joins:
+        - table: "emp_master_data"
+          joinType: "INNER"
+          joinKeyId:
+            name: "emp_id"
+            type: "integer"
+          joinedKeyId:
+            name: "employee_pk"
+            type: "integer"
+      caseSensitive: false

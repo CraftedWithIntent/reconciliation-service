@@ -1,0 +1,34 @@
+---
+global:
+  scrape_interval: "15s"
+  evaluation_interval: "15s"
+  external_labels:
+    cluster: "reconciliation-service"
+    environment: "development"
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets: []
+rule_files: []
+scrape_configs:
+- job_name: "reconciliation-service"
+  static_configs:
+  - targets:
+    - "127.0.0.1:8888"
+    labels:
+      service: "reconciliation-service"
+      instance: "primary"
+  scrape_interval: "10s"
+  scrape_timeout: "5s"
+  metric_relabel_configs:
+  - source_labels:
+    - "__name__"
+    regex: "jvm_.*|process_.*|reconciliation_.*"
+    action: "keep"
+- job_name: "prometheus"
+  static_configs:
+  - targets:
+    - "localhost:9090"
+    labels:
+      instance: "primary"
+  scrape_interval: "30s"
