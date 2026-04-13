@@ -57,7 +57,7 @@ class ReconciliationServiceTest {
                 List.of(FieldDefinition.decimal("amount"), FieldDefinition.string("vendor"))));
 
     vendorDomainConfig =
-        new DomainConfig("vendor-invoices", sourceConfig, targetConfig, null, false);
+        new DomainConfig("vendor-invoices", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     // Setup expense domain configuration with FieldDefinition objects
     DatabaseConfig expenseSource =
@@ -81,7 +81,7 @@ class ReconciliationServiceTest {
                 List.of(FieldDefinition.decimal("AMOUNT"), FieldDefinition.string("CATEGORY"))));
 
     expenseDomainConfig =
-        new DomainConfig("expense-reports", expenseSource, expenseTarget, null, false);
+        new DomainConfig("expense-reports", expenseSource, expenseTarget, null, false, 95.0, 1.0);
 
     // Setup configuration properties mock using lenient() to avoid strictness issues
     Map<String, DomainConfig> domains = new HashMap<>();

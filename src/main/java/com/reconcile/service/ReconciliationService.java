@@ -111,7 +111,7 @@ public class ReconciliationService {
       DomainConfig domainConfig = configProperties.getDomain(domainName);
       SparkSession ss = getSparkSession();
 
-      // Create and execute engine with domain configuration
+      // Create and execute engine with domain configuration and domain-specific thresholds
       SparkReconciliationEngine engine =
           new SparkReconciliationEngine(
               ss,
@@ -121,7 +121,9 @@ public class ReconciliationService {
               sourcePassword,
               targetUrl,
               targetUsername,
-              targetPassword);
+              targetPassword,
+              domainConfig.sloTarget(),
+              domainConfig.varianceThreshold());
 
       SparkReconciliationEngine.ReconciliationResult engineResult = engine.reconcile();
 

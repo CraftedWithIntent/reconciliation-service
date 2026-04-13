@@ -28,16 +28,32 @@ public record DomainConfig(
     DatabaseConfig source, // Source database configuration (independent)
     DatabaseConfig target, // Target database configuration (independent)
     Map<String, String> fieldMappings, // Optional explicit field mapping for documentation
-    boolean caseSensitive // Case sensitivity for hash comparisons
+    boolean caseSensitive, // Case sensitivity for hash comparisons
+    Double sloTarget, // Service Level Objective threshold % (default: 95.0)
+    Double varianceThreshold // Field variance threshold % (default: 1.0)
     ) {
 
-  /** Compact constructor with default case sensitivity */
+  /** Compact constructor with default case sensitivity and thresholds */
   public DomainConfig {
-    // Nothing to validate in compact constructor
+    // Apply defaults if not specified
+    if (sloTarget == null) {
+      sloTarget = 95.0;
+    }
+    if (varianceThreshold == null) {
+      varianceThreshold = 1.0;
+    }
+    // Validate ranges
+    if (sloTarget < 0 || sloTarget > 100) {
+      throw new IllegalArgumentException("SLO target must be between 0 and 100, got: " + sloTarget);
+    }
+    if (varianceThreshold < 0) {
+      throw new IllegalArgumentException(
+          "Variance threshold cannot be negative, got: " + varianceThreshold);
+    }
   }
 
-  /** Static factory for common case with default case-insensitive matching */
+  /** Static factory for common case with default case-insensitive matching and thresholds */
   public static DomainConfig of(String name, DatabaseConfig source, DatabaseConfig target) {
-    return new DomainConfig(name, source, target, null, false);
+    return new DomainConfig(name, source, target, null, false, 95.0, 1.0);
   }
 }

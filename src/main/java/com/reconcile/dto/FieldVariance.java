@@ -12,11 +12,16 @@ public record FieldVariance(
     String varianceType // Type: "NUMERIC", "TEXT", "NULL_MISMATCH", "EXACT_MATCH"
     ) {
 
-  /** Check if this field variance exceeds the 1% threshold */
+  /** Check if this field variance exceeds the default 1% threshold */
   public boolean exceedsThreshold() {
+    return exceedsThreshold(1.0);
+  }
+
+  /** Check if this field variance exceeds a specified threshold */
+  public boolean exceedsThreshold(double threshold) {
     if (variancePercentage == null) {
       return false; // Exact match or non-numeric
     }
-    return variancePercentage > 1.0; // 1% threshold
+    return variancePercentage > threshold;
   }
 }

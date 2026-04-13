@@ -60,6 +60,8 @@ reconciliation:
             name: "vendor_uuid"
             type: "uuid"
       caseSensitive: false
+      sloTarget: 95.0
+      varianceThreshold: 1.0
     expense-reports:
       name: "expense-reports"
       source:
@@ -115,3 +117,5 @@ reconciliation:
             name: "employee_pk"
             type: "integer"
       caseSensitive: false
+      sloTarget: 90.0
+      varianceThreshold: 2.0

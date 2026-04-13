@@ -57,7 +57,7 @@ class DomainConfigTest {
 
     // Act
     DomainConfig config =
-        new DomainConfig("vendor-invoices", sourceConfig, targetConfig, fieldMappings, true);
+        new DomainConfig("vendor-invoices", sourceConfig, targetConfig, fieldMappings, true, 95.0, 1.0);
 
     // Assert
     assertEquals("vendor-invoices", config.name());
@@ -72,7 +72,7 @@ class DomainConfigTest {
   void testCreateWithNullMappings() {
     // Act
     DomainConfig config =
-        new DomainConfig("vendor-invoices", sourceConfig, targetConfig, null, false);
+        new DomainConfig("vendor-invoices", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     // Assert
     assertEquals("vendor-invoices", config.name());
@@ -118,7 +118,7 @@ class DomainConfigTest {
 
     // Act
     DomainConfig config =
-        new DomainConfig("hetero-domain", postgresSource, oracleTarget, new HashMap<>(), false);
+        new DomainConfig("hetero-domain", postgresSource, oracleTarget, new HashMap<>(), false, 95.0, 1.0);
 
     // Assert
     assertEquals(DataSourceType.POSTGRESQL, config.source().type());
@@ -137,7 +137,7 @@ class DomainConfigTest {
 
     // Act
     DomainConfig config =
-        new DomainConfig("mapped-domain", sourceConfig, targetConfig, mappings, false);
+        new DomainConfig("mapped-domain", sourceConfig, targetConfig, mappings, false, 95.0, 1.0);
 
     // Assert
     assertEquals(3, config.fieldMappings().size());
@@ -151,10 +151,10 @@ class DomainConfigTest {
   void testCaseSensitiveFlag() {
     // Arrange
     DomainConfig caseInsensitiveConfig =
-        new DomainConfig("domain1", sourceConfig, targetConfig, null, false);
+        new DomainConfig("domain1", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     DomainConfig caseSensitiveConfig =
-        new DomainConfig("domain2", sourceConfig, targetConfig, null, true);
+        new DomainConfig("domain2", sourceConfig, targetConfig, null, true, 95.0, 1.0);
 
     // Assert
     assertFalse(caseInsensitiveConfig.caseSensitive());
@@ -223,10 +223,10 @@ class DomainConfigTest {
   void testImmutability() {
     // Act
     DomainConfig config1 =
-        new DomainConfig("test-domain", sourceConfig, targetConfig, new HashMap<>(), false);
+        new DomainConfig("test-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
 
     DomainConfig config2 =
-        new DomainConfig("test-domain", sourceConfig, targetConfig, new HashMap<>(), false);
+        new DomainConfig("test-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
 
     // Assert - same values should produce equal records
     assertEquals(config1, config2);
@@ -237,7 +237,7 @@ class DomainConfigTest {
   void testEmptyFieldMappings() {
     // Act
     DomainConfig config =
-        new DomainConfig("simple-domain", sourceConfig, targetConfig, new HashMap<>(), false);
+        new DomainConfig("simple-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
 
     // Assert
     assertNotNull(config.fieldMappings());

@@ -339,7 +339,7 @@ class OraclePostgresReconciliationIT {
                     FieldDefinition.decimal("amount"),
                     FieldDefinition.string("line_item_id"))));
 
-    return new DomainConfig("vendor_invoices", sourceConfig, targetConfig, null, false);
+    return new DomainConfig("vendor_invoices", sourceConfig, targetConfig, null, false, 95.0, 1.0);
   }
 
   /** Helper: Insert row into Oracle */

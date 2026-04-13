@@ -28,6 +28,8 @@ public class SparkReconciliationEngine {
   private final String targetUrl;
   private final String targetUsername;
   private final String targetPassword;
+  private final double sloTarget;
+  private final double varianceThreshold;
 
   public SparkReconciliationEngine(
       SparkSession sparkSession,
@@ -37,7 +39,9 @@ public class SparkReconciliationEngine {
       String sourcePassword,
       String targetUrl,
       String targetUsername,
-      String targetPassword) {
+      String targetPassword,
+      double sloTarget,
+      double varianceThreshold) {
     this.sparkSession = sparkSession;
     this.domainConfig = domainConfig;
     this.sourceUrl = sourceUrl;
@@ -46,6 +50,31 @@ public class SparkReconciliationEngine {
     this.targetUrl = targetUrl;
     this.targetUsername = targetUsername;
     this.targetPassword = targetPassword;
+    this.sloTarget = sloTarget;
+    this.varianceThreshold = varianceThreshold;
+  }
+
+  /** Backward compatibility constructor with default thresholds */
+  public SparkReconciliationEngine(
+      SparkSession sparkSession,
+      DomainConfig domainConfig,
+      String sourceUrl,
+      String sourceUsername,
+      String sourcePassword,
+      String targetUrl,
+      String targetUsername,
+      String targetPassword) {
+    this(
+        sparkSession,
+        domainConfig,
+        sourceUrl,
+        sourceUsername,
+        sourcePassword,
+        targetUrl,
+        targetUsername,
+        targetPassword,
+        95.0,
+        1.0);
   }
 
   /** Detect database type from JDBC URL string */
@@ -221,7 +250,8 @@ public class SparkReconciliationEngine {
 
   /**
    * Determine verdict based on hash match and field variance analysis PRISTINE: Hash matches (100%)
-   * NOISY: Fields variance all <= 1% MATERIAL: Any field variance > 1%
+   * NOISY: Fields variance all <= varianceThreshold MATERIAL: Any field variance >
+   * varianceThreshold
    */
   private ReconciliationVerdict determineVerdict(
       String srcHash, String tgtHash, List<FieldVariance> fieldVariances) {
@@ -231,11 +261,11 @@ public class SparkReconciliationEngine {
     }
 
     // Calculate overall record match percentage
-    // Fields match if variance is <= 1% or exact match
+    // Fields match if variance is <= varianceThreshold or exact match
     int matchingFields = 0;
     for (FieldVariance variance : fieldVariances) {
-      // Field matches if it doesn't exceed the 1% threshold
-      if (!variance.exceedsThreshold()) {
+      // Field matches if it doesn't exceed the configured threshold
+      if (!variance.exceedsThreshold(varianceThreshold)) {
         matchingFields++;
       }
     }
@@ -243,8 +273,8 @@ public class SparkReconciliationEngine {
     double totalFields = fieldVariances.size();
     double matchPercentage = (totalFields > 0) ? (matchingFields / totalFields) * 100.0 : 0.0;
 
-    // Apply SLO thresholds: 95% = NOISY, <95% = MATERIAL
-    if (matchPercentage >= 95.0) {
+    // Apply SLO thresholds: sloTarget% = NOISY, <sloTarget% = MATERIAL
+    if (matchPercentage >= sloTarget) {
       return ReconciliationVerdict.NOISY;
     } else {
       return ReconciliationVerdict.MATERIAL;

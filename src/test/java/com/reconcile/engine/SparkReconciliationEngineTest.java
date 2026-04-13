@@ -59,7 +59,7 @@ class SparkReconciliationEngineTest {
                     FieldDefinition.decimal("amount"), FieldDefinition.string("description"))));
 
     // Setup domain config using record constructor
-    domainConfig = new DomainConfig("test-reconciliation", sourceConfig, targetConfig, null, false);
+    domainConfig = new DomainConfig("test-reconciliation", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     testCases = new ArrayList<>();
   }
@@ -230,7 +230,7 @@ class SparkReconciliationEngineTest {
                     FieldDefinition.decimal("amt"), FieldDefinition.string("description"))));
 
     DomainConfig config =
-        new DomainConfig("test", sourceConfig, targetConfig, new HashMap<>(), false);
+        new DomainConfig("test", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
 
     // Assert
     assertEquals(DataSourceType.POSTGRESQL, config.source().type());
@@ -269,7 +269,7 @@ class SparkReconciliationEngineTest {
                     FieldDefinition.timestamp("posting_date"))));
 
     DomainConfig config =
-        new DomainConfig("test", sourceConfig, targetConfig, new HashMap<>(), false);
+        new DomainConfig("test", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
 
     // Assert
     assertEquals(3, config.source().hashFields().size());

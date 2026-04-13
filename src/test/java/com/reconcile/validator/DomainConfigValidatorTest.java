@@ -46,7 +46,7 @@ class DomainConfigValidatorTest {
   void testValidatePage_CorrectConfiguration() {
     // Arrange
     DomainConfig config =
-        new DomainConfig("test-domain", validSourceConfig, validTargetConfig, null, false);
+        new DomainConfig("test-domain", validSourceConfig, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -70,7 +70,7 @@ class DomainConfigValidatorTest {
   @DisplayName("Should reject empty domain name")
   void testValidate_EmptyDomainName() {
     // Arrange
-    DomainConfig config = new DomainConfig("", validSourceConfig, validTargetConfig, null, false);
+    DomainConfig config = new DomainConfig("", validSourceConfig, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -84,7 +84,7 @@ class DomainConfigValidatorTest {
   @DisplayName("Should reject missing source configuration")
   void testValidate_MissingSource() {
     // Arrange
-    DomainConfig config = new DomainConfig("test-domain", null, validTargetConfig, null, false);
+    DomainConfig config = new DomainConfig("test-domain", null, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -98,7 +98,7 @@ class DomainConfigValidatorTest {
   @DisplayName("Should reject missing target configuration")
   void testValidate_MissingTarget() {
     // Arrange
-    DomainConfig config = new DomainConfig("test-domain", validSourceConfig, null, null, false);
+    DomainConfig config = new DomainConfig("test-domain", validSourceConfig, null, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -122,7 +122,7 @@ class DomainConfigValidatorTest {
             new ArrayList<>(List.of(FieldDefinition.string("name"))));
 
     DomainConfig config =
-        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false);
+        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -146,7 +146,7 @@ class DomainConfigValidatorTest {
             new ArrayList<>(List.of(FieldDefinition.string("name"))));
 
     DomainConfig config =
-        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false);
+        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -170,7 +170,7 @@ class DomainConfigValidatorTest {
             new ArrayList<>(List.of(FieldDefinition.string("name"))));
 
     DomainConfig config =
-        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false);
+        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -194,7 +194,7 @@ class DomainConfigValidatorTest {
             new ArrayList<>());
 
     DomainConfig config =
-        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false);
+        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -221,7 +221,7 @@ class DomainConfigValidatorTest {
             badFields);
 
     DomainConfig config =
-        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false);
+        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -254,7 +254,7 @@ class DomainConfigValidatorTest {
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(List.of(FieldDefinition.string("field1"))));
 
-    DomainConfig config = new DomainConfig("test-domain", sourceConfig, targetConfig, null, false);
+    DomainConfig config = new DomainConfig("test-domain", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -286,7 +286,7 @@ class DomainConfigValidatorTest {
             List.of(FieldDefinition.of("id", "BIGINT")),
             new ArrayList<>(List.of(FieldDefinition.string("name"))));
 
-    DomainConfig config = new DomainConfig("test-domain", sourceConfig, targetConfig, null, false);
+    DomainConfig config = new DomainConfig("test-domain", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -317,7 +317,7 @@ class DomainConfigValidatorTest {
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(List.of(FieldDefinition.string("name"))));
 
-    DomainConfig config = new DomainConfig("test-domain", sourceConfig, targetConfig, null, false);
+    DomainConfig config = new DomainConfig("test-domain", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
@@ -340,7 +340,7 @@ class DomainConfigValidatorTest {
             new ArrayList<>(List.of(FieldDefinition.string("name"))));
 
     DomainConfig config =
-        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false);
+        new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
 
     // Act & Assert
     assertThrows(
@@ -381,7 +381,7 @@ class DomainConfigValidatorTest {
                     FieldDefinition.timestamp("created_date"))));
 
     DomainConfig config =
-        new DomainConfig("vendor-reconciliation", sourceConfig, targetConfig, null, false);
+        new DomainConfig("vendor-reconciliation", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     // Act
     List<String> errors = DomainConfigValidator.validate(config);
