@@ -1,0 +1,103 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: Build and Test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Compile and build
+        run: ./gradlew clean build -x test
+
+      - name: Run unit tests
+        run: ./gradlew test
+
+      - name: Publish test results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: build/test-results/test/TEST-*.xml
+          check_name: Test Results
+          comment_mode: always
+
+      - name: Generate test report
+        if: success()
+        run: |
+          echo "✅ Build Successful"
+          echo "Tests: $(grep -h 'tests=' build/test-results/test/TEST-*.xml 2>/dev/null | grep -o 'tests="[0-9]*"' | head -1 | cut -d'"' -f2) passed"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: build/test-results/
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build/reports/
+
+  code-quality:
+    runs-on: ubuntu-latest
+    name: Code Quality Checks
+    needs: build-and-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run Spotless formatting check
+        run: ./gradlew spotlessCheck
+
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest || true
+
+  notify-on-failure:
+    runs-on: ubuntu-latest
+    name: Notify on Failure
+    if: failure()
+    needs: [build-and-test, code-quality]
+
+    steps:
+      - name: Notify build failure
+        run: |
+          echo "❌ CI/CD Pipeline Failed"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "See details at: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
