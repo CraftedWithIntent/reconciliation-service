@@ -59,7 +59,8 @@ class SparkReconciliationEngineTest {
                     FieldDefinition.decimal("amount"), FieldDefinition.string("description"))));
 
     // Setup domain config using record constructor
-    domainConfig = new DomainConfig("test-reconciliation", sourceConfig, targetConfig, null, false, 95.0, 1.0);
+    domainConfig =
+        new DomainConfig("test-reconciliation", sourceConfig, targetConfig, null, false, 95.0, 1.0);
 
     testCases = new ArrayList<>();
   }

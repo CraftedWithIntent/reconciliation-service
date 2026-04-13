@@ -55,7 +55,8 @@ class SqlViewValidatorTest {
               new ArrayList<>(
                   List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))));
 
-      validDomain = new DomainConfig("test-domain", validConfig, validConfig, null, false, 95.0, 1.0);
+      validDomain =
+          new DomainConfig("test-domain", validConfig, validConfig, null, false, 95.0, 1.0);
 
       // Setup mock database metadata
       when(mockDataSource.getConnection()).thenReturn(mockConnection);

@@ -56,7 +56,8 @@ class SqlViewGeneratorTest {
                     FieldDefinition.decimal("amount"),
                     FieldDefinition.string("billing_cycle"))));
 
-    domainConfig = new DomainConfig("vendor-invoices", sourceConfig, targetConfig, null, false, 95.0, 1.0);
+    domainConfig =
+        new DomainConfig("vendor-invoices", sourceConfig, targetConfig, null, false, 95.0, 1.0);
   }
 
   @Test
@@ -498,7 +499,8 @@ class HeterogeneousGeneratorTest {
             new ArrayList<>(
                 List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))));
 
-    DomainConfig domainConfig = new DomainConfig("test", baseConfig, baseConfig, null, false, 95.0, 1.0);
+    DomainConfig domainConfig =
+        new DomainConfig("test", baseConfig, baseConfig, null, false, 95.0, 1.0);
 
     // Act
     String postgresql =

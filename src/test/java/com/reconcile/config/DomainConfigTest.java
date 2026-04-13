@@ -57,7 +57,8 @@ class DomainConfigTest {
 
     // Act
     DomainConfig config =
-        new DomainConfig("vendor-invoices", sourceConfig, targetConfig, fieldMappings, true, 95.0, 1.0);
+        new DomainConfig(
+            "vendor-invoices", sourceConfig, targetConfig, fieldMappings, true, 95.0, 1.0);
 
     // Assert
     assertEquals("vendor-invoices", config.name());
@@ -118,7 +119,8 @@ class DomainConfigTest {
 
     // Act
     DomainConfig config =
-        new DomainConfig("hetero-domain", postgresSource, oracleTarget, new HashMap<>(), false, 95.0, 1.0);
+        new DomainConfig(
+            "hetero-domain", postgresSource, oracleTarget, new HashMap<>(), false, 95.0, 1.0);
 
     // Assert
     assertEquals(DataSourceType.POSTGRESQL, config.source().type());
@@ -223,10 +225,12 @@ class DomainConfigTest {
   void testImmutability() {
     // Act
     DomainConfig config1 =
-        new DomainConfig("test-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
+        new DomainConfig(
+            "test-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
 
     DomainConfig config2 =
-        new DomainConfig("test-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
+        new DomainConfig(
+            "test-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
 
     // Assert - same values should produce equal records
     assertEquals(config1, config2);
@@ -237,7 +241,8 @@ class DomainConfigTest {
   void testEmptyFieldMappings() {
     // Act
     DomainConfig config =
-        new DomainConfig("simple-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
+        new DomainConfig(
+            "simple-domain", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
 
     // Assert
     assertNotNull(config.fieldMappings());
