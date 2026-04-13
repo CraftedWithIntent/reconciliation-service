@@ -33,7 +33,10 @@ class DomainConfigTest {
             List.of(FieldDefinition.string("invoice_id")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("amount"), FieldDefinition.string("description"))));
+                    FieldDefinition.decimal("amount"), FieldDefinition.string("description"))),
+            null,
+            null,
+            null);
 
     targetConfig =
         new DatabaseConfig(
@@ -44,7 +47,10 @@ class DomainConfigTest {
             List.of(FieldDefinition.string("invoice_id")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("amount"), FieldDefinition.string("description"))));
+                    FieldDefinition.decimal("amount"), FieldDefinition.string("description"))),
+            null,
+            null,
+            null);
   }
 
   @Test
@@ -106,7 +112,10 @@ class DomainConfigTest {
             "invoices",
             "",
             List.of(FieldDefinition.string("invoice_id")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig oracleTarget =
         new DatabaseConfig(
@@ -115,7 +124,10 @@ class DomainConfigTest {
             "INVOICES",
             "",
             List.of(FieldDefinition.string("INV_ID")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("AMT"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("AMT"))),
+            null,
+            null,
+            null);
 
     // Act
     DomainConfig config =
@@ -177,7 +189,10 @@ class DomainConfigTest {
             new ArrayList<>(
                 Arrays.asList(
                     FieldDefinition.decimal("vendor_amount"),
-                    FieldDefinition.string("vendor_desc"))));
+                    FieldDefinition.string("vendor_desc"))),
+            null,
+            null,
+            null);
     DatabaseConfig vendorTarget =
         new DatabaseConfig(
             DataSourceType.POSTGRESQL,
@@ -188,7 +203,10 @@ class DomainConfigTest {
             new ArrayList<>(
                 Arrays.asList(
                     FieldDefinition.decimal("ap_amount"),
-                    FieldDefinition.string("ap_description"))));
+                    FieldDefinition.string("ap_description"))),
+            null,
+            null,
+            null);
 
     // Arrange - expense reports domain with FieldDefinition objects
     DatabaseConfig expenseSource =
@@ -198,7 +216,10 @@ class DomainConfigTest {
             "EXPENSE_REPORTS",
             "",
             List.of(FieldDefinition.string("EXP_ID")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("EXP_AMOUNT"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("EXP_AMOUNT"))),
+            null,
+            null,
+            null);
     DatabaseConfig expenseTarget =
         new DatabaseConfig(
             DataSourceType.ORACLE,
@@ -206,7 +227,10 @@ class DomainConfigTest {
             "EXPENSES",
             "",
             List.of(FieldDefinition.string("GL_EXP_ID")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("GL_AMOUNT"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("GL_AMOUNT"))),
+            null,
+            null,
+            null);
 
     // Act
     DomainConfig vendorDomain = DomainConfig.of("vendor-invoices", vendorSource, vendorTarget);
@@ -260,7 +284,10 @@ class DomainConfigTest {
             "invoice_source",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
     DatabaseConfig target =
         new DatabaseConfig(
             DataSourceType.POSTGRESQL,
@@ -268,7 +295,10 @@ class DomainConfigTest {
             "invoice_target",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     // Act
     DomainConfig config = DomainConfig.of("mapped-tables", source, target);

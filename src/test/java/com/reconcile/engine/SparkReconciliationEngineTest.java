@@ -44,7 +44,10 @@ class SparkReconciliationEngineTest {
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("amount"), FieldDefinition.string("description"))));
+                    FieldDefinition.decimal("amount"), FieldDefinition.string("description"))),
+            null,
+            null,
+            null);
 
     // Setup target database config using record constructor with FieldDefinition
     DatabaseConfig targetConfig =
@@ -56,7 +59,10 @@ class SparkReconciliationEngineTest {
             List.of(FieldDefinition.string("record_id")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("amount"), FieldDefinition.string("description"))));
+                    FieldDefinition.decimal("amount"), FieldDefinition.string("description"))),
+            null,
+            null,
+            null);
 
     // Setup domain config using record constructor
     domainConfig =
@@ -217,7 +223,10 @@ class SparkReconciliationEngineTest {
             "",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                Arrays.asList(FieldDefinition.decimal("amount"), FieldDefinition.string("desc"))));
+                Arrays.asList(FieldDefinition.decimal("amount"), FieldDefinition.string("desc"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -228,7 +237,10 @@ class SparkReconciliationEngineTest {
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("amt"), FieldDefinition.string("description"))));
+                    FieldDefinition.decimal("amt"), FieldDefinition.string("description"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);
@@ -254,7 +266,10 @@ class SparkReconciliationEngineTest {
                 Arrays.asList(
                     FieldDefinition.decimal("invoice_amt"),
                     FieldDefinition.string("invoice_desc"),
-                    FieldDefinition.timestamp("invoice_date"))));
+                    FieldDefinition.timestamp("invoice_date"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -267,7 +282,10 @@ class SparkReconciliationEngineTest {
                 Arrays.asList(
                     FieldDefinition.decimal("amt"),
                     FieldDefinition.string("desc"),
-                    FieldDefinition.timestamp("posting_date"))));
+                    FieldDefinition.timestamp("posting_date"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test", sourceConfig, targetConfig, new HashMap<>(), false, 95.0, 1.0);

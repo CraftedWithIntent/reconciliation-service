@@ -41,7 +41,10 @@ class DatabaseConfigTest {
             "invoices",
             "_hash",
             List.of(FieldDefinition.string("invoice_id")),
-            hashFields);
+            hashFields,
+            null,
+            null,
+            null);
 
     // Assert
     assertEquals(PostgresType, config.type());
@@ -64,7 +67,10 @@ class DatabaseConfigTest {
             "invoices",
             null, // null viewSuffix
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     // Assert
     assertEquals("", config.viewSuffix());
@@ -81,10 +87,16 @@ class DatabaseConfigTest {
             "invoices",
             "_hash",
             List.of(FieldDefinition.string("id")),
+            null,
+            null,
+            null,
             null);
     DatabaseConfig withoutSuffix =
         new DatabaseConfig(
-            PostgresType, "public", "invoices", null, List.of(FieldDefinition.string("id")), null);
+            PostgresType, "public", "invoices", null, List.of(FieldDefinition.string("id")), null,
+            null,
+            null,
+            null);
 
     // Act & Assert
     assertEquals("_hash", withSuffix.effectiveViewSuffix());
@@ -102,7 +114,10 @@ class DatabaseConfigTest {
             "vendor_invoices",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     // Act
     String fullName = config.getFullTableName();
@@ -122,6 +137,9 @@ class DatabaseConfigTest {
             "invoices",
             "_with_hash",
             List.of(FieldDefinition.string("id")),
+            null,
+            null,
+            null,
             null);
 
     // Act
@@ -137,7 +155,10 @@ class DatabaseConfigTest {
     // Arrange
     DatabaseConfig config =
         new DatabaseConfig(
-            PostgresType, "public", "invoices", null, List.of(FieldDefinition.string("id")), null);
+            PostgresType, "public", "invoices", null, List.of(FieldDefinition.string("id")), null,
+            null,
+            null,
+            null);
 
     // Act
     String fullViewName = config.getFullViewName();
@@ -195,7 +216,10 @@ class DatabaseConfigTest {
             "",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                Arrays.asList(FieldDefinition.string("f1"), FieldDefinition.string("f2"))));
+                Arrays.asList(FieldDefinition.string("f1"), FieldDefinition.string("f2"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig config2 =
         new DatabaseConfig(
@@ -205,7 +229,10 @@ class DatabaseConfigTest {
             "",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                Arrays.asList(FieldDefinition.string("f1"), FieldDefinition.string("f2"))));
+                Arrays.asList(FieldDefinition.string("f1"), FieldDefinition.string("f2"))),
+            null,
+            null,
+            null);
 
     // Assert - same values should produce equal records
     assertEquals(config1, config2);
@@ -222,7 +249,10 @@ class DatabaseConfigTest {
             "invoices",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
     DatabaseConfig oracleConfig =
         new DatabaseConfig(
             OracleType,
@@ -230,7 +260,10 @@ class DatabaseConfigTest {
             "INVOICES",
             "",
             List.of(FieldDefinition.string("INV_ID")),
-            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("AMT"))));
+            new ArrayList<>(Arrays.asList(FieldDefinition.decimal("AMT"))),
+            null,
+            null,
+            null);
 
     // Assert
     assertTrue(postgresConfig.type() == DataSourceType.POSTGRESQL);
@@ -262,7 +295,10 @@ class DatabaseConfigTest {
             "inv",
             "",
             List.of(FieldDefinition.string("source_id")),
-            sourceFields);
+            sourceFields,
+            null,
+            null,
+            null);
     DatabaseConfig targetConfig =
         new DatabaseConfig(
             OracleType,
@@ -270,7 +306,10 @@ class DatabaseConfigTest {
             "INV",
             "",
             List.of(FieldDefinition.string("target_id")),
-            targetFields);
+            targetFields,
+            null,
+            null,
+            null);
 
     // Assert
     assertEquals(3, sourceConfig.hashFields().size());
@@ -284,10 +323,16 @@ class DatabaseConfigTest {
     // Act
     DatabaseConfig config1 =
         new DatabaseConfig(
-            PostgresType, "MySchema", "MyTable", "", List.of(FieldDefinition.string("id")), null);
+            PostgresType, "MySchema", "MyTable", "", List.of(FieldDefinition.string("id")), null,
+            null,
+            null,
+            null);
     DatabaseConfig config2 =
         new DatabaseConfig(
-            PostgresType, "myschema", "mytable", "", List.of(FieldDefinition.string("id")), null);
+            PostgresType, "myschema", "mytable", "", List.of(FieldDefinition.string("id")), null,
+            null,
+            null,
+            null);
 
     // Assert
     assertEquals("MySchema.MyTable", config1.getFullTableName());

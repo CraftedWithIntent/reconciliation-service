@@ -38,7 +38,13 @@ public record DatabaseConfig(
         idFields, // Composite ID field definitions with explicit datatypes IN THIS DATABASE (can be
     // single or multiple)
     List<FieldDefinition>
-        hashFields // Fields for MD5 hash IN THIS DATABASE with explicit datatypes (order-important)
+        hashFields, // Fields for MD5 hash IN THIS DATABASE with explicit datatypes
+    // (order-important)
+    String url, // JDBC URL (optional - can be inherited from application.yml if null)
+    String username, // Database username (optional - can be inherited from application.yml if null)
+    String
+        password // Database password via env var (optional - can be inherited from application.yml
+    // if null)
     ) {
 
   /** Compact constructor with default values */
@@ -70,13 +76,13 @@ public record DatabaseConfig(
 
   /** Static factory for minimal configuration */
   public static DatabaseConfig of(String schema, String table) {
-    return new DatabaseConfig(null, schema, table, "", null, null);
+    return new DatabaseConfig(null, schema, table, "", null, null, null, null, null);
   }
 
   /** Static factory with schema, table, and viewSuffix */
   public static DatabaseConfig of(String schema, String table, String viewSuffix) {
     return new DatabaseConfig(
-        null, schema, table, viewSuffix != null ? viewSuffix : "", null, null);
+        null, schema, table, viewSuffix != null ? viewSuffix : "", null, null, null, null, null);
   }
 
   /** Get the effective view suffix (empty string if null) */
@@ -92,5 +98,10 @@ public record DatabaseConfig(
   /** Get the full view name with hash suffix */
   public String getFullViewName() {
     return schema + "." + table + effectiveViewSuffix();
+  }
+
+  /** Check if this database has its own datasource configuration (not inherited) */
+  public boolean hasDatasourceConfig() {
+    return url != null && username != null;
   }
 }

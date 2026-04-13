@@ -324,7 +324,10 @@ class OraclePostgresReconciliationIT {
                 List.of(
                     FieldDefinition.string("vendor_name"),
                     FieldDefinition.decimal("amount"),
-                    FieldDefinition.string("line_item_id"))));
+                    FieldDefinition.string("line_item_id"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -337,7 +340,10 @@ class OraclePostgresReconciliationIT {
                 List.of(
                     FieldDefinition.string("vendor_name"),
                     FieldDefinition.decimal("amount"),
-                    FieldDefinition.string("line_item_id"))));
+                    FieldDefinition.string("line_item_id"))),
+            null,
+            null,
+            null);
 
     return new DomainConfig("vendor_invoices", sourceConfig, targetConfig, null, false, 95.0, 1.0);
   }

@@ -46,7 +46,10 @@ class DiscrepancyVerdictTest {
                 Arrays.asList(
                     FieldDefinition.decimal("amount"),
                     FieldDefinition.string("description"),
-                    FieldDefinition.timestamp("date"))));
+                    FieldDefinition.timestamp("date"))),
+            null,
+            null,
+            null);
 
     // Setup target database config using record constructor with FieldDefinition objects
     DatabaseConfig targetConfig =
@@ -60,7 +63,10 @@ class DiscrepancyVerdictTest {
                 Arrays.asList(
                     FieldDefinition.decimal("amount"),
                     FieldDefinition.string("description"),
-                    FieldDefinition.timestamp("date"))));
+                    FieldDefinition.timestamp("date"))),
+            null,
+            null,
+            null);
 
     // Initialize test discrepancy list
     testDiscrepancies = new ArrayList<>();

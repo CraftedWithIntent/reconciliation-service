@@ -37,7 +37,10 @@ class ReconciliationConfigPropertiesTest {
             List.of(FieldDefinition.string("invoice_id")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("amount"), FieldDefinition.string("vendor_id"))));
+                    FieldDefinition.decimal("amount"), FieldDefinition.string("vendor_id"))),
+            null,
+            null,
+            null);
     DatabaseConfig vendorTarget =
         new DatabaseConfig(
             DataSourceType.POSTGRESQL,
@@ -47,7 +50,10 @@ class ReconciliationConfigPropertiesTest {
             List.of(FieldDefinition.string("invoice_id")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("amount"), FieldDefinition.string("vendor_id"))));
+                    FieldDefinition.decimal("amount"), FieldDefinition.string("vendor_id"))),
+            null,
+            null,
+            null);
     vendorDomain = DomainConfig.of("vendor-invoices", vendorSource, vendorTarget);
 
     // Setup expense domain
@@ -60,7 +66,10 @@ class ReconciliationConfigPropertiesTest {
             List.of(FieldDefinition.string("EXP_ID")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("EXP_AMOUNT"), FieldDefinition.string("DEPT_ID"))));
+                    FieldDefinition.decimal("EXP_AMOUNT"), FieldDefinition.string("DEPT_ID"))),
+            null,
+            null,
+            null);
     DatabaseConfig expenseTarget =
         new DatabaseConfig(
             DataSourceType.ORACLE,
@@ -70,7 +79,10 @@ class ReconciliationConfigPropertiesTest {
             List.of(FieldDefinition.string("GL_EXP_ID")),
             new ArrayList<>(
                 Arrays.asList(
-                    FieldDefinition.decimal("AMOUNT"), FieldDefinition.string("DEPARTMENT"))));
+                    FieldDefinition.decimal("AMOUNT"), FieldDefinition.string("DEPARTMENT"))),
+            null,
+            null,
+            null);
     expenseDomain = DomainConfig.of("expense-reports", expenseSource, expenseTarget);
   }
 

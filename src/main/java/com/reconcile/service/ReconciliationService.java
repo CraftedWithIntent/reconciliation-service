@@ -89,6 +89,33 @@ public class ReconciliationService {
   }
 
   /**
+   * Resolve JDBC connection details for a database configuration Falls back to global datasource if
+   * per-domain configuration is not provided
+   *
+   * @param dbConfig the database configuration (source or target)
+   * @param globalUrl global JDBC URL (fallback)
+   * @param globalUsername global username (fallback)
+   * @param globalPassword global password (fallback)
+   * @return array [url, username, password]
+   */
+  private String[] resolveDatasource(
+      com.reconcile.config.DatabaseConfig dbConfig,
+      String globalUrl,
+      String globalUsername,
+      String globalPassword) {
+    if (dbConfig.hasDatasourceConfig()) {
+      System.out.println(
+          "[ReconciliationService] Using per-domain datasource for schema: " + dbConfig.schema());
+      return new String[] {dbConfig.url(), dbConfig.username(), dbConfig.password()};
+    } else {
+      System.out.println(
+          "[ReconciliationService] No per-domain datasource configured, using global fallback for schema: "
+              + dbConfig.schema());
+      return new String[] {globalUrl, globalUsername, globalPassword};
+    }
+  }
+
+  /**
    * Perform reconciliation for a specific domain using Spark SQL with MD5-based row hashing
    * Supports heterogeneous data sources (PostgreSQL, Oracle, MySQL, etc.)
    *
@@ -111,17 +138,23 @@ public class ReconciliationService {
       DomainConfig domainConfig = configProperties.getDomain(domainName);
       SparkSession ss = getSparkSession();
 
+      // Resolve datasources for source and target with fallback to global configuration
+      String[] sourceDs =
+          resolveDatasource(domainConfig.source(), sourceUrl, sourceUsername, sourcePassword);
+      String[] targetDs =
+          resolveDatasource(domainConfig.target(), targetUrl, targetUsername, targetPassword);
+
       // Create and execute engine with domain configuration and domain-specific thresholds
       SparkReconciliationEngine engine =
           new SparkReconciliationEngine(
               ss,
               domainConfig,
-              sourceUrl,
-              sourceUsername,
-              sourcePassword,
-              targetUrl,
-              targetUsername,
-              targetPassword,
+              sourceDs[0],
+              sourceDs[1],
+              sourceDs[2],
+              targetDs[0],
+              targetDs[1],
+              targetDs[2],
               domainConfig.sloTarget(),
               domainConfig.varianceThreshold());
 

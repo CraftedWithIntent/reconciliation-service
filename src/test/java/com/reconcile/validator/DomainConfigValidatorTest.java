@@ -28,7 +28,10 @@ class DomainConfigValidatorTest {
             "_hash",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))));
+                List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     validTargetConfig =
         new DatabaseConfig(
@@ -38,7 +41,10 @@ class DomainConfigValidatorTest {
             "_hash",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))));
+                List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
   }
 
   @Test
@@ -123,7 +129,10 @@ class DomainConfigValidatorTest {
             "table",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
@@ -147,7 +156,10 @@ class DomainConfigValidatorTest {
             "",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
@@ -171,7 +183,10 @@ class DomainConfigValidatorTest {
             "table",
             "",
             null,
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
@@ -195,7 +210,10 @@ class DomainConfigValidatorTest {
             "table",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>());
+            new ArrayList<>(),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
@@ -222,7 +240,10 @@ class DomainConfigValidatorTest {
             "table",
             "",
             List.of(FieldDefinition.string("id")),
-            badFields);
+            badFields,
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
@@ -247,7 +268,10 @@ class DomainConfigValidatorTest {
             "",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                List.of(FieldDefinition.string("field1"), FieldDefinition.string("field2"))));
+                List.of(FieldDefinition.string("field1"), FieldDefinition.string("field2"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -256,7 +280,10 @@ class DomainConfigValidatorTest {
             "target_table",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("field1"))));
+            new ArrayList<>(List.of(FieldDefinition.string("field1"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", sourceConfig, targetConfig, null, false, 95.0, 1.0);
@@ -280,7 +307,10 @@ class DomainConfigValidatorTest {
             "source_table",
             "",
             List.of(FieldDefinition.integer("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -289,7 +319,10 @@ class DomainConfigValidatorTest {
             "target_table",
             "",
             List.of(FieldDefinition.of("id", "BIGINT")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", sourceConfig, targetConfig, null, false, 95.0, 1.0);
@@ -312,7 +345,10 @@ class DomainConfigValidatorTest {
             "source_table",
             "",
             List.of(FieldDefinition.uuid("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -321,7 +357,10 @@ class DomainConfigValidatorTest {
             "target_table",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", sourceConfig, targetConfig, null, false, 95.0, 1.0);
@@ -344,7 +383,10 @@ class DomainConfigValidatorTest {
             "table",
             "",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig("test-domain", badConfig, validTargetConfig, null, false, 95.0, 1.0);
@@ -372,7 +414,10 @@ class DomainConfigValidatorTest {
                 List.of(
                     FieldDefinition.string("vendor_name"),
                     FieldDefinition.decimal("amount"),
-                    FieldDefinition.date("invoice_date"))));
+                    FieldDefinition.date("invoice_date"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -385,7 +430,10 @@ class DomainConfigValidatorTest {
                 List.of(
                     FieldDefinition.string("vendor_info"),
                     FieldDefinition.numeric("total"),
-                    FieldDefinition.timestamp("created_date"))));
+                    FieldDefinition.timestamp("created_date"))),
+            null,
+            null,
+            null);
 
     DomainConfig config =
         new DomainConfig(

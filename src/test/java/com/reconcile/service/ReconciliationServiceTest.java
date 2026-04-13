@@ -44,7 +44,10 @@ class ReconciliationServiceTest {
             "",
             List.of(FieldDefinition.string("invoice_id")),
             new ArrayList<>(
-                List.of(FieldDefinition.decimal("amount"), FieldDefinition.string("vendor"))));
+                List.of(FieldDefinition.decimal("amount"), FieldDefinition.string("vendor"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -54,7 +57,10 @@ class ReconciliationServiceTest {
             "",
             List.of(FieldDefinition.string("invoice_id")),
             new ArrayList<>(
-                List.of(FieldDefinition.decimal("amount"), FieldDefinition.string("vendor"))));
+                List.of(FieldDefinition.decimal("amount"), FieldDefinition.string("vendor"))),
+            null,
+            null,
+            null);
 
     vendorDomainConfig =
         new DomainConfig("vendor-invoices", sourceConfig, targetConfig, null, false, 95.0, 1.0);
@@ -68,7 +74,10 @@ class ReconciliationServiceTest {
             "",
             List.of(FieldDefinition.string("EXP_ID")),
             new ArrayList<>(
-                List.of(FieldDefinition.decimal("AMOUNT"), FieldDefinition.string("CATEGORY"))));
+                List.of(FieldDefinition.decimal("AMOUNT"), FieldDefinition.string("CATEGORY"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig expenseTarget =
         new DatabaseConfig(
@@ -78,7 +87,10 @@ class ReconciliationServiceTest {
             "",
             List.of(FieldDefinition.string("EXP_ID")),
             new ArrayList<>(
-                List.of(FieldDefinition.decimal("AMOUNT"), FieldDefinition.string("CATEGORY"))));
+                List.of(FieldDefinition.decimal("AMOUNT"), FieldDefinition.string("CATEGORY"))),
+            null,
+            null,
+            null);
 
     expenseDomainConfig =
         new DomainConfig("expense-reports", expenseSource, expenseTarget, null, false, 95.0, 1.0);

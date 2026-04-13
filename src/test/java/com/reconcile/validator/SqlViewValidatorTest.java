@@ -53,7 +53,10 @@ class SqlViewValidatorTest {
               "_hash",
               List.of(FieldDefinition.string("id")),
               new ArrayList<>(
-                  List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))));
+                  List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))),
+              null,
+              null,
+              null);
 
       validDomain =
           new DomainConfig("test-domain", validConfig, validConfig, null, false, 95.0, 1.0);

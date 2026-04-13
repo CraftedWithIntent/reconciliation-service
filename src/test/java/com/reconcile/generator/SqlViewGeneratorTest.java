@@ -41,7 +41,10 @@ class SqlViewGeneratorTest {
                 List.of(
                     FieldDefinition.string("vendor_name"),
                     FieldDefinition.decimal("amount"),
-                    FieldDefinition.string("billing_cycle"))));
+                    FieldDefinition.string("billing_cycle"))),
+            null,
+            null,
+            null);
 
     targetConfig =
         new DatabaseConfig(
@@ -54,7 +57,10 @@ class SqlViewGeneratorTest {
                 List.of(
                     FieldDefinition.string("vendor_name"),
                     FieldDefinition.decimal("amount"),
-                    FieldDefinition.string("billing_cycle"))));
+                    FieldDefinition.string("billing_cycle"))),
+            null,
+            null,
+            null);
 
     domainConfig =
         new DomainConfig("vendor-invoices", sourceConfig, targetConfig, null, false, 95.0, 1.0);
@@ -156,7 +162,10 @@ class PostgreSqlGeneratorTest {
             "_hash",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                List.of(FieldDefinition.string("customer"), FieldDefinition.decimal("amount"))));
+                List.of(FieldDefinition.string("customer"), FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     domainConfig = new DomainConfig("test-domain", dbConfig, dbConfig, null, false, 95.0, 1.0);
   }
@@ -243,7 +252,10 @@ class OracleSqlGeneratorTest {
             "_hash",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                List.of(FieldDefinition.string("vendor_name"), FieldDefinition.decimal("amount"))));
+                List.of(FieldDefinition.string("vendor_name"), FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     domainConfig = new DomainConfig("test-domain", dbConfig, dbConfig, null, false, 95.0, 1.0);
   }
@@ -327,7 +339,10 @@ class MySqlGeneratorTest {
             "_hash",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                List.of(FieldDefinition.string("customer"), FieldDefinition.decimal("amount"))));
+                List.of(FieldDefinition.string("customer"), FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     domainConfig = new DomainConfig("test-domain", dbConfig, dbConfig, null, false, 95.0, 1.0);
   }
@@ -411,7 +426,10 @@ class SqlServerGeneratorTest {
             "_hash",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                List.of(FieldDefinition.string("customer"), FieldDefinition.decimal("amount"))));
+                List.of(FieldDefinition.string("customer"), FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     domainConfig = new DomainConfig("test-domain", dbConfig, dbConfig, null, false, 95.0, 1.0);
   }
@@ -497,7 +515,10 @@ class HeterogeneousGeneratorTest {
             "_hash",
             List.of(FieldDefinition.string("id")),
             new ArrayList<>(
-                List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))));
+                List.of(FieldDefinition.string("name"), FieldDefinition.decimal("amount"))),
+            null,
+            null,
+            null);
 
     DomainConfig domainConfig =
         new DomainConfig("test", baseConfig, baseConfig, null, false, 95.0, 1.0);
@@ -536,7 +557,10 @@ class HeterogeneousGeneratorTest {
             "source_data",
             "_hash",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DatabaseConfig targetConfig =
         new DatabaseConfig(
@@ -545,7 +569,10 @@ class HeterogeneousGeneratorTest {
             "target_data",
             "_hash",
             List.of(FieldDefinition.string("id")),
-            new ArrayList<>(List.of(FieldDefinition.string("name"))));
+            new ArrayList<>(List.of(FieldDefinition.string("name"))),
+            null,
+            null,
+            null);
 
     DomainConfig domainConfig =
         new DomainConfig("heterogeneous", sourceConfig, targetConfig, null, false, 95.0, 1.0);
