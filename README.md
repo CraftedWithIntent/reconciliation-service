@@ -63,6 +63,8 @@ reconciliation:
       hashFields: [field1, field2, field3, ...]  # Fields to include in hash
       idField: id                                  # Unique identifier field
       caseSensitive: false
+      sloTarget: 95.0                             # Optional: Verdict threshold % (default: 95.0)
+      varianceThreshold: 1.0                      # Optional: Field variance threshold % (default: 1.0)
 ```
 
 **Adding a New Domain:**
@@ -85,6 +87,8 @@ reconciliation:
       hashFields: [field1, field2, field3]
       idField: id
       caseSensitive: false
+      sloTarget: 95.0              # Optional: Sets verdict threshold (default: 95.0%)
+      varianceThreshold: 1.0       # Optional: Field variance threshold (default: 1.0%)
 ```
 
 Then reconcile with:
@@ -145,6 +149,8 @@ reconciliation:
         - line_item_id
       idField: id
       caseSensitive: false
+      sloTarget: 95.0              # 95% match = NOISY, <95% = MATERIAL
+      varianceThreshold: 1.0       # Fields >1% variance = MATERIAL
 ```
 
 ## Reconciliation Logic
@@ -160,6 +166,26 @@ The SparkReconciliationEngine performs distributed reconciliation using Spark SQ
    - **HASH_MISMATCH**: ID present in both but hashes differ
    - **SOURCE_ONLY**: ID only in source
    - **TARGET_ONLY**: ID only in target
+
+### Verdict Classification
+
+For HASH_MISMATCH discrepancies, the engine assigns a verdict based on field-level variance analysis:
+
+**PRISTINE**: Record hashes match exactly (100% identical)
+
+**NOISY**: Record hashes differ slightly
+- All fields have variance ≤ `varianceThreshold` (default: 1.0%)
+- Field-level match percentage ≥ `sloTarget` (default: 95.0%)
+- Example: 95% of fields match within 1% variance
+
+**MATERIAL**: Record hashes differ significantly
+- At least one field has variance > `varianceThreshold` (default: 1.0%)
+- Field-level match percentage < `sloTarget` (default: 95.0%)
+- Represents substantive differences requiring investigation
+
+**Customizing Thresholds**: Both `sloTarget` and `varianceThreshold` are configurable per-domain:
+- Increase `sloTarget` for stricter reconciliation (e.g., 98.0 for financial data)
+- Increase `varianceThreshold` for more tolerance (e.g., 2.0% for rounding differences)
 
 ### Hash Generation
 
