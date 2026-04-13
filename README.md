@@ -153,6 +153,65 @@ reconciliation:
       varianceThreshold: 1.0       # Fields >1% variance = MATERIAL
 ```
 
+## Per-Domain Datasource Configuration
+
+By default, all domains use the global datasources defined in `application.yml`. For multi-tenant, multi-environment, or complex architectures, you can override datasources at the domain level.
+
+### Global Datasources (Default)
+
+Configure in `application.yml`:
+```yaml
+spring:
+  datasource:
+    source:
+      url: jdbc:postgresql://source-db:5432/source
+      username: ${SOURCE_DB_USER}
+      password: ${SOURCE_DB_PASS}
+    target:
+      url: jdbc:postgresql://target-db:5432/target
+      username: ${TARGET_DB_USER}
+      password: ${TARGET_DB_PASS}
+```
+
+All domains use these datasources if not overridden.
+
+### Per-Domain Datasource Override
+
+Optionally configure datasources at the domain level in `domains.yml`. This overrides global datasources for that domain only:
+
+```yaml
+reconciliation:
+  domains:
+    sales-domain:
+      source:
+        schema: sales_schema
+        table: orders
+        viewSuffix: _with_hash
+        # Optional: Override global datasource
+        url: jdbc:postgresql://sales-db:5432/sales
+        username: ${SALES_DB_USER}
+        password: ${SALES_DB_PASS}
+      target:
+        schema: accounting_schema
+        table: order_ledger
+        viewSuffix: _with_hash
+        # Optional: Override global datasource
+        url: jdbc:oracle:thin:@accounting-server:1521:ACCT
+        username: ${ACCT_DB_USER}
+        password: ${ACCT_DB_PASS}
+```
+
+**Configuration Precedence:**
+1. If domain has `url`, `username`, `password` → Use per-domain datasource
+2. Otherwise → Fall back to global datasource from `application.yml`
+3. If neither configured → Error
+
+**Use Cases:**
+- **Multi-tenant**: Different tenants with different databases
+- **Environment-specific**: Dev domains connect to dev DB, prod domains to prod DB
+- **Federated Systems**: Reconcile systems that are not co-located
+- **Legacy Integration**: Source and target on completely different platforms
+
 ## Reconciliation Logic
 
 The SparkReconciliationEngine performs distributed reconciliation using Spark SQL:

@@ -119,3 +119,44 @@ reconciliation:
       caseSensitive: false
       sloTarget: 90.0
       varianceThreshold: 2.0
+    sales-orders:
+      name: "sales-orders"
+      source:
+        type: "postgresql"
+        schema: "sales_schema"
+        table: "sales_orders"
+        viewSuffix: "_with_hash"
+        url: "jdbc:postgresql://sales-source-db:5432/sales"
+        username: "${SALES_SOURCE_USER:postgres}"
+        password: "${SALES_SOURCE_PASS:postgres}"
+        idFields:
+        - name: "order_id"
+          type: "integer"
+        hashFields:
+        - name: "customer_id"
+          type: "integer"
+        - name: "order_amount"
+          type: "numeric"
+        - name: "order_date"
+          type: "date"
+      target:
+        type: "oracle"
+        schema: "ACCOUNTING"
+        table: "ORDER_LEDGER"
+        viewSuffix: "_HASH"
+        url: "jdbc:oracle:thin:@accounting-db:1521:ACCTDB"
+        username: "${ACCT_USER:acct}"
+        password: "${ACCT_PASS:acct}"
+        idFields:
+        - name: "ORDER_NO"
+          type: "integer"
+        hashFields:
+        - name: "CUST_ID"
+          type: "integer"
+        - name: "TXN_AMT"
+          type: "numeric"
+        - name: "TXN_DATE"
+          type: "date"
+      caseSensitive: false
+      sloTarget: 95.0
+      varianceThreshold: 1.0

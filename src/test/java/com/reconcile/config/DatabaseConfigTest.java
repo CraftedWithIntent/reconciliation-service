@@ -93,7 +93,12 @@ class DatabaseConfigTest {
             null);
     DatabaseConfig withoutSuffix =
         new DatabaseConfig(
-            PostgresType, "public", "invoices", null, List.of(FieldDefinition.string("id")), null,
+            PostgresType,
+            "public",
+            "invoices",
+            null,
+            List.of(FieldDefinition.string("id")),
+            null,
             null,
             null,
             null);
@@ -155,7 +160,12 @@ class DatabaseConfigTest {
     // Arrange
     DatabaseConfig config =
         new DatabaseConfig(
-            PostgresType, "public", "invoices", null, List.of(FieldDefinition.string("id")), null,
+            PostgresType,
+            "public",
+            "invoices",
+            null,
+            List.of(FieldDefinition.string("id")),
+            null,
             null,
             null,
             null);
@@ -323,13 +333,23 @@ class DatabaseConfigTest {
     // Act
     DatabaseConfig config1 =
         new DatabaseConfig(
-            PostgresType, "MySchema", "MyTable", "", List.of(FieldDefinition.string("id")), null,
+            PostgresType,
+            "MySchema",
+            "MyTable",
+            "",
+            List.of(FieldDefinition.string("id")),
+            null,
             null,
             null,
             null);
     DatabaseConfig config2 =
         new DatabaseConfig(
-            PostgresType, "myschema", "mytable", "", List.of(FieldDefinition.string("id")), null,
+            PostgresType,
+            "myschema",
+            "mytable",
+            "",
+            List.of(FieldDefinition.string("id")),
+            null,
             null,
             null,
             null);
