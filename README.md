@@ -12,6 +12,14 @@ A distributed reconciliation microservice built with Spring Boot 3.1.5 and Apach
 - **Dynamic Database Selection**: Automatic JDBC driver detection based on URL patterns
 - **Spring Boot 3.x Compatible**: Includes servlet API compatibility for Spark 3.5.0
 
+## Support This Project
+
+If you find this reconciliation service valuable, consider supporting its development:
+
+[![GitHub Sponsor](https://img.shields.io/badge/sponsor-CraftedWithIntent-blue?logo=github)](https://github.com/sponsors/CraftedWithIntent)
+
+Your support helps maintain and improve this project!
+
 ## Architecture Overview
 
 ```
