@@ -17,7 +17,7 @@
 
 ### Step 1: Clone and Navigate
 ```bash
-cd /Users/philipthomas/repo/cost-reconcile
+cd /Users/philipthomas/repo/reconciliation-service
 ```
 
 ### Step 2: Verify Project Structure
@@ -45,7 +45,7 @@ Building reconciliation-app
 Step 1/12 : FROM eclipse-temurin:17 AS builder
 Step 2/12 : WORKDIR /app
 ...
-Successfully tagged cost-reconcile_reconciliation-app:latest
+Successfully tagged reconciliation-service_reconciliation-app:latest
 ```
 
 ### Step 4: Start Services
@@ -234,7 +234,7 @@ docker system prune -a --volumes
 docker-compose down
 
 # Remove image
-docker image remove cost-reconcile_reconciliation-app
+docker image remove reconciliation-service_reconciliation-app
 
 # Checkout previous version
 git checkout <previous-commit>

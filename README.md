@@ -1,4 +1,4 @@
-# Cost Reconciliation Service
+# Reconciliation Service
 
 A distributed reconciliation microservice built with Spring Boot 3.1.5 and Apache Spark 3.5.0 for high-performance hash-based reconciliation across heterogeneous data sources (PostgreSQL, Oracle, MySQL, SQL Server).
 
@@ -219,7 +219,7 @@ Generic reconciliation endpoint that works for any configured domain.
 ### Quick Start with Docker
 
 ```bash
-cd /Users/philipthomas/repo/cost-reconcile
+cd /Users/philipthomas/repo/reconciliation-service
 
 # Start services
 docker-compose up -d
@@ -312,7 +312,7 @@ Rebuild:
 ## Project Structure
 
 ```
-cost-reconcile/
+reconciliation-service/
 ├── src/main/java/com/reconcile/
 │   ├── controller/
 │   │   └── ReconciliationController.java       # Single generic endpoint

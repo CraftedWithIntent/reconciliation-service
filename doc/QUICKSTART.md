@@ -10,7 +10,7 @@
 
 1. **Navigate to project directory:**
    ```bash
-   cd /Users/philipthomas/repo/cost-reconcile
+   cd /Users/philipthomas/repo/reconciliation-service
    ```
 
 2. **Start all services:**
