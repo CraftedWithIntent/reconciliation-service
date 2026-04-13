@@ -39,52 +39,48 @@ A distributed reconciliation microservice built with Spring Boot 3.1.5 and Apach
 
 ## Domain Configuration
 
-Domains are defined in a separate `domains.yml` manifest file for clean separation of concerns.
+Domains are defined in a separate `domains.yml` manifest file for clean separation of concerns. Each domain maps a source and target table for reconciliation.
 
 **File Location:** `src/main/resources/domains.yml`
 
 Spring Boot automatically loads all YAML files from the resources folder, so both `application.yml` and `domains.yml` are merged during startup.
 
-**Example Domain Configuration (from domains.yml):**
+**Domain Configuration Structure:**
 
 ```yaml
 reconciliation:
   domains:
-    vendor-invoices:
-      name: vendor-invoices
+    {domain-name}:
+      name: {domain-name}
       source:
-        schema: source_schema
-        table: vendor_invoices
+        schema: {source_schema}
+        table: {source_table}
         viewSuffix: _with_hash      # Views must be named {table}{viewSuffix}
       target:
-        schema: target_schema
-        table: internal_ledger
+        schema: {target_schema}
+        table: {target_table}
         viewSuffix: _with_hash
-      hashFields:
-        - vendor_name
-        - amount
-        - billing_cycle
-        - line_item_id
-      idField: id
+      hashFields: [field1, field2, field3, ...]  # Fields to include in hash
+      idField: id                                  # Unique identifier field
       caseSensitive: false
 ```
 
 **Adding a New Domain:**
 
-Edit `src/main/resources/domains.yml` and add a new entry:
+Edit `src/main/resources/domains.yml` and add:
 
 ```yaml
 reconciliation:
   domains:
-    my-new-domain:
-      name: my-new-domain
+    my-domain:
+      name: my-domain
       source:
-        schema: my_source_schema
-        table: my_source_table
+        schema: source_schema
+        table: source_table
         viewSuffix: _with_hash
       target:
-        schema: my_target_schema
-        table: my_target_table
+        schema: target_schema
+        table: target_table
         viewSuffix: _with_hash
       hashFields: [field1, field2, field3]
       idField: id
@@ -93,36 +89,63 @@ reconciliation:
 
 Then reconcile with:
 ```bash
-curl "http://localhost:8080/api/reconcile?domain=my-new-domain"
+curl "http://localhost:8080/api/reconcile?domain=my-domain"
 ```
 
 **No code changes required!** Domain management is purely YAML-based.
 
-## Data Schema
+## Example Domain Configuration
 
-### Source Database: vendor_invoices
+Here is a practical example using a sales reconciliation domain:
 
-| Column       | Type        | Constraints    | Description                  |
+### Example: Sales Orders vs Accounting Records
+
+Reconcile sales orders from a sales system with corresponding accounting records.
+
+**Source Table:** `sales_schema.sales_orders`
+| Column       | Type        | Constraints    | Description              |
 |--------------|-------------|----------------|------------------------------|
-| id           | UUID        | PRIMARY KEY    | Unique record identifier     |
-| vendor_name  | TEXT        | NOT NULL       | Name of the vendor           |
-| amount       | NUMERIC     | NULLABLE       | Invoice amount               |
-| billing_cycle| DATE        | NOT NULL       | Billing period               |
-| line_item_id | TEXT        | NOT NULL       | Line item reference          |
-| created_at   | TIMESTAMP   | DEFAULT NOW()  | Record creation timestamp    |
-| updated_at   | TIMESTAMP   | DEFAULT NOW()  | Record update timestamp      |
+| id           | UUID        | PRIMARY KEY    | Unique order identifier  |
+| customer_id  | TEXT        | NOT NULL       | Customer reference       |
+| order_amount | NUMERIC     | NULLABLE       | Order total              |
+| order_date   | DATE        | NOT NULL       | Order date               |
+| line_item_id | TEXT        | NOT NULL       | Line item reference      |
+| created_at   | TIMESTAMP   | DEFAULT NOW()  | Record creation time     |
+| updated_at   | TIMESTAMP   | DEFAULT NOW()  | Record update time       |
 
-### Target Database: internal_ledger
-
-| Column       | Type        | Constraints    | Description                  |
+**Target Table:** `accounting_schema.accounting_records`
+| Column       | Type        | Constraints    | Description              |
 |--------------|-------------|----------------|------------------------------|
-| id           | UUID        | PRIMARY KEY    | Unique record identifier     |
-| vendor_name  | TEXT        | NOT NULL       | Name of the vendor           |
-| amount       | NUMERIC     | NULLABLE       | Ledger amount                |
-| billing_cycle| DATE        | NOT NULL       | Billing period               |
-| line_item_id | TEXT        | NOT NULL       | Line item reference          |
-| created_at   | TIMESTAMP   | DEFAULT NOW()  | Record creation timestamp    |
-| updated_at   | TIMESTAMP   | DEFAULT NOW()  | Record update timestamp      |
+| id           | UUID        | PRIMARY KEY    | Unique record identifier |
+| customer_id  | TEXT        | NOT NULL       | Customer reference       |
+| amount       | NUMERIC     | NULLABLE       | Transaction amount       |
+| trans_date   | DATE        | NOT NULL       | Transaction date         |
+| line_item_id | TEXT        | NOT NULL       | Line item reference      |
+| created_at   | TIMESTAMP   | DEFAULT NOW()  | Record creation time     |
+| updated_at   | TIMESTAMP   | DEFAULT NOW()  | Record update time       |
+
+**Configuration:**
+```yaml
+reconciliation:
+  domains:
+    sales-to-accounting:
+      name: sales-to-accounting
+      source:
+        schema: sales_schema
+        table: sales_orders
+        viewSuffix: _with_hash
+      target:
+        schema: accounting_schema
+        table: accounting_records
+        viewSuffix: _with_hash
+      hashFields:
+        - customer_id
+        - order_amount  # maps to 'amount' in target
+        - order_date    # maps to 'trans_date' in target
+        - line_item_id
+      idField: id
+      caseSensitive: false
+```
 
 ## Reconciliation Logic
 
@@ -140,33 +163,35 @@ The SparkReconciliationEngine performs distributed reconciliation using Spark SQ
 
 ### Hash Generation
 
-MD5 hashes are pre-computed in database views:
+MD5 hashes are pre-computed in database views. Each source and target table requires a corresponding `{table}_with_hash` view that concatenates the hash fields.
 
-**PostgreSQL:**
+**PostgreSQL Example:**
 ```sql
-CREATE VIEW source_schema.vendor_invoices_with_hash AS
+CREATE VIEW {schema}.{table}_with_hash AS
 SELECT 
   id,
-  md5(CAST(COALESCE(vendor_name, '') || 
-           COALESCE(amount::text, 'NULL') || 
-           COALESCE(billing_cycle::text, '') || 
-           COALESCE(line_item_id, '') AS BYTEA)) as record_hash,
-  vendor_name, amount, billing_cycle, line_item_id
-FROM source_schema.vendor_invoices;
+  md5(CAST(COALESCE(field1, '') || 
+           COALESCE(field2::text, 'NULL') || 
+           COALESCE(field3::text, '') || 
+           COALESCE(field4, '') AS BYTEA)) as record_hash,
+  field1, field2, field3, field4
+FROM {schema}.{table};
 ```
 
-**Oracle:**
+**Oracle Example:**
 ```sql
-CREATE VIEW source_schema.vendor_invoices_with_hash AS
+CREATE VIEW {schema}.{table}_with_hash AS
 SELECT 
   id,
   LOWER(DBMS_CRYPTO.Hash(UTL_RAW.CAST_TO_RAW(
-    NVL(vendor_name, '') || NVL(TO_CHAR(amount), 'NULL') || 
-    NVL(TO_CHAR(billing_cycle), '') || NVL(line_item_id, '')
+    NVL(field1, '') || NVL(TO_CHAR(field2), 'NULL') || 
+    NVL(TO_CHAR(field3), '') || NVL(field4, '')
   ), 2)) as record_hash,
-  vendor_name, amount, billing_cycle, line_item_id
-FROM source_schema.vendor_invoices;
+  field1, field2, field3, field4
+FROM {schema}.{table};
 ```
+
+Replace placeholders with your actual schema, table, and field names.
 
 ## API Endpoints
 
@@ -175,7 +200,7 @@ FROM source_schema.vendor_invoices;
 Generic reconciliation endpoint that works for any configured domain.
 
 **Query Parameters:**
-- `domain` (required): Domain name from configuration (e.g., `vendor-invoices`, `expense-reports`)
+- `domain` (required): Domain name from configuration (defined in `domains.yml`)
 
 **Response:**
 ```json
@@ -228,7 +253,7 @@ docker-compose up -d
 sleep 30
 
 # Test reconciliation
-curl -s "http://localhost:8080/api/reconcile?domain=vendor-invoices" | jq .
+curl -s "http://localhost:8080/api/reconcile?domain=your-domain-name" | jq .
 
 # View logs
 docker-compose logs -f reconcile-app
