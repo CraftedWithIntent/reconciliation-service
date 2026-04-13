@@ -238,9 +238,13 @@ Generic reconciliation endpoint that works for any configured domain.
   "sourceOnlyRecords": 5,
   "targetOnlyRecords": 0,
   "matchPercentage": 95.0,
+  "pristineCount": 905,
+  "noisyCount": 45,
+  "materialCount": 0,
   "discrepancies": [
     {
       "discrepancyType": "HASH_MISMATCH",
+      "verdict": "NOISY",
       "sourceRecord": {
         "id": "550e8400-e29b-41d4-a716-446655440000",
         "recordHash": "5d41402abc4b2a76b9719d911017c592",
@@ -251,11 +255,56 @@ Generic reconciliation endpoint that works for any configured domain.
         "recordHash": "6512bd43d9caa6e02c990b0a82652dca",
         "source": "target"
       },
-      "details": "Record hash differs between source and target"
+      "details": "Record hash differs between source and target",
+      "fieldVariances": [
+        {
+          "fieldName": "amount",
+          "sourceValue": 1000.00,
+          "targetValue": 1000.50,
+          "variancePercentage": 0.05,
+          "varianceType": "NUMERIC"
+        },
+        {
+          "fieldName": "date",
+          "sourceValue": "2026-04-13",
+          "targetValue": "2026-04-13",
+          "variancePercentage": 0.0,
+          "varianceType": "EXACT_MATCH"
+        }
+      ]
+    },
+    {
+      "discrepancyType": "MISSING_IN_TARGET",
+      "verdict": "MATERIAL",
+      "sourceRecord": {
+        "id": "550e8400-e29b-41d4-a716-446655440001",
+        "recordHash": "abc123def456",
+        "source": "source"
+      },
+      "targetRecord": null,
+      "details": "Record present in source but not in target",
+      "fieldVariances": []
     }
   ]
 }
 ```
+
+**Response Fields:**
+
+- `totalSourceRecords`, `totalTargetRecords`: Record counts in each system
+- `matchedRecords`: Records present in both systems with identical hashes
+- `mismatchedRecords`: Records present in both but with different hashes
+- `sourceOnlyRecords`: Records only in source (missing in target)
+- `targetOnlyRecords`: Records only in target (missing in source)
+- `matchPercentage`: Overall record match percentage
+- `pristineCount`: Records with 100% match (PRISTINE verdict)
+- `noisyCount`: Records with minor differences (NOISY verdict) - within configured thresholds
+- `materialCount`: Records with significant differences (MATERIAL verdict) - exceeding thresholds
+- `discrepancies`: Array of discrepancy details including:
+  - `discrepancyType`: Type of mismatch (HASH_MISMATCH, MISSING_IN_TARGET, MISSING_IN_SOURCE)
+  - `verdict`: Reconciliation verdict (PRISTINE, NOISY, MATERIAL)
+  - `sourceRecord`, `targetRecord`: Records from each system
+  - `fieldVariances`: Detailed field-level variance analysis with variance percentages
 
 ## Technology Stack
 
