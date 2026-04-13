@@ -1,5 +1,10 @@
 # Reconciliation Service
 
+[![CI/CD Pipeline](https://github.com/CraftedWithIntent/reconciliation-service/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/CraftedWithIntent/reconciliation-service/actions/workflows/ci-cd.yml)
+[![Tests](https://img.shields.io/badge/tests-219-brightgreen)](build/test-results/)
+[![Java Version](https://img.shields.io/badge/java-17%2B-orange)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/spring%20boot-3.1.5-green)](https://spring.io/projects/spring-boot)
+
 A distributed reconciliation microservice built with Spring Boot 3.1.5 and Apache Spark 3.5.0 for high-performance hash-based reconciliation across heterogeneous data sources (PostgreSQL, Oracle, MySQL, SQL Server).
 
 ## Key Features
@@ -19,6 +24,20 @@ If you find this reconciliation service valuable, consider supporting its develo
 [![GitHub Sponsor](https://img.shields.io/badge/sponsor-CraftedWithIntent-blue?logo=github)](https://github.com/sponsors/CraftedWithIntent)
 
 Your support helps maintain and improve this project!
+
+## Continuous Integration & Deployment
+
+Every commit and pull request is automatically tested by GitHub Actions:
+
+- **Builds successfully** with Java 17 and Gradle
+- **All 219 unit tests pass** 
+- **Code quality checks** pass (Spotless formatting, Checkstyle)
+- **Test reports** published automatically
+- **Coverage artifacts** generated and stored
+
+**Monitor CI Status:**
+- View workflow runs: [GitHub Actions](https://github.com/CraftedWithIntent/reconciliation-service/actions)
+- View latest workflow badge: [![CI/CD Pipeline](https://github.com/CraftedWithIntent/reconciliation-service/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/CraftedWithIntent/reconciliation-service/actions/workflows/ci-cd.yml)
 
 ## Architecture Overview
 
