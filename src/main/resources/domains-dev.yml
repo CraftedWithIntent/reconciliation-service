@@ -1,0 +1,71 @@
+---
+reconciliation:
+  domains:
+    vendor-invoices:
+      name: "vendor-invoices"
+      source:
+        type: "postgresql"
+        schema: "source"
+        table: "vendor_invoices"
+        viewSuffix: "_with_hash"
+        idFields:
+        - name: "vendor_id"
+          type: "string"
+        - name: "invoice_date"
+          type: "date"
+        hashFields:
+        - name: "vendor_name"
+          type: "string"
+        - name: "invoice_amount"
+          type: "decimal"
+        - name: "billing_cycle"
+          type: "string"
+      target:
+        type: "postgresql"
+        schema: "target"
+        table: "invoices"
+        viewSuffix: "_with_hash"
+        idFields:
+        - name: "supplier_id"
+          type: "integer"
+        hashFields:
+        - name: "vendor"
+          type: "string"
+        - name: "amount"
+          type: "numeric"
+        - name: "billing_period"
+          type: "string"
+      caseSensitive: false
+      sloTarget: 93.0
+      varianceThreshold: 1.5
+    expense-reports:
+      name: "expense-reports"
+      source:
+        type: "postgresql"
+        schema: "source"
+        table: "expense_reports"
+        viewSuffix: "_with_hash"
+        idFields:
+        - name: "exp_id"
+          type: "string"
+        hashFields:
+        - name: "emp_code"
+          type: "string"
+        - name: "expense_amount"
+          type: "decimal"
+      target:
+        type: "postgresql"
+        schema: "target"
+        table: "expense_ledger"
+        viewSuffix: "_with_hash"
+        idFields:
+        - name: "expense_pk"
+          type: "integer"
+        hashFields:
+        - name: "employee_id"
+          type: "integer"
+        - name: "amount"
+          type: "numeric"
+      caseSensitive: false
+      sloTarget: 93.0
+      varianceThreshold: 1.5

@@ -1,0 +1,83 @@
+---
+reconciliation:
+  domains:
+    vendor-invoices:
+      name: "vendor-invoices"
+      source:
+        type: "postgresql"
+        schema: "source"
+        table: "vendor_invoices"
+        viewSuffix: "_with_hash"
+        url: "${VENDOR_SOURCE_DB_URL}"
+        username: "${VENDOR_SOURCE_DB_USER}"
+        password: "${VENDOR_SOURCE_DB_PASS}"
+        idFields:
+        - name: "vendor_id"
+          type: "string"
+        - name: "invoice_date"
+          type: "date"
+        hashFields:
+        - name: "vendor_name"
+          type: "string"
+        - name: "invoice_amount"
+          type: "decimal"
+        - name: "billing_cycle"
+          type: "string"
+      target:
+        type: "postgresql"
+        schema: "target"
+        table: "invoices"
+        viewSuffix: "_with_hash"
+        url: "${VENDOR_TARGET_DB_URL}"
+        username: "${VENDOR_TARGET_DB_USER}"
+        password: "${VENDOR_TARGET_DB_PASS}"
+        idFields:
+        - name: "supplier_id"
+          type: "integer"
+        hashFields:
+        - name: "vendor"
+          type: "string"
+        - name: "amount"
+          type: "numeric"
+        - name: "billing_period"
+          type: "string"
+      caseSensitive: true
+      sloTarget: 99.0
+      varianceThreshold: 0.5
+    expense-reports:
+      name: "expense-reports"
+      source:
+        type: "postgresql"
+        schema: "source"
+        table: "expense_reports"
+        viewSuffix: "_with_hash"
+        url: "${EXP_SOURCE_DB_URL}"
+        username: "${EXP_SOURCE_DB_USER}"
+        password: "${EXP_SOURCE_DB_PASS}"
+        idFields:
+        - name: "exp_id"
+          type: "string"
+        hashFields:
+        - name: "emp_code"
+          type: "string"
+        - name: "expense_amount"
+          type: "decimal"
+      target:
+        type: "postgresql"
+        schema: "target"
+        table: "expense_ledger"
+        viewSuffix: "_with_hash"
+        url: "${EXP_TARGET_DB_URL}"
+        username: "${EXP_TARGET_DB_USER}"
+        password: "${EXP_TARGET_DB_PASS}"
+        idFields:
+        - name: "expense_pk"
+          type: "integer"
+        hashFields:
+        - name: "employee_id"
+          type: "integer"
+        - name: "amount"
+          type: "numeric"
+      caseSensitive: true
+      sloTarget: 99.0
+      varianceThreshold: 0.5

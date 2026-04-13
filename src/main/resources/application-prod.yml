@@ -1,0 +1,39 @@
+---
+spring:
+  datasource:
+    source:
+      url: "${SOURCE_DB_URL}"
+      username: "${SOURCE_DB_USER}"
+      password: "${SOURCE_DB_PASSWORD}"
+      driver-class-name: "${SOURCE_DB_DRIVER:org.postgresql.Driver}"
+      hikari:
+        maximum-pool-size: 20
+        minimum-idle: 10
+        connection-timeout: 30000
+        idle-timeout: 900000
+        max-lifetime: 1800000
+        connection-test-query: "SELECT 1"
+        leak-detection-threshold: 60000
+    target:
+      url: "${TARGET_DB_URL}"
+      username: "${TARGET_DB_USER}"
+      password: "${TARGET_DB_PASSWORD}"
+      driver-class-name: "${TARGET_DB_DRIVER:org.postgresql.Driver}"
+      hikari:
+        maximum-pool-size: 20
+        minimum-idle: 10
+        connection-timeout: 30000
+        idle-timeout: 900000
+        max-lifetime: 1800000
+        connection-test-query: "SELECT 1"
+        leak-detection-threshold: 60000
+server:
+  port: "${SERVER_PORT:8080}"
+  compression:
+    enabled: true
+    min-response-size: 1024
+logging:
+  level:
+    root: "ERROR"
+    com.reconcile: "WARN"
+    org.springframework.web: "ERROR"

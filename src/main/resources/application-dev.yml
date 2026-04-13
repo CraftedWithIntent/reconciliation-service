@@ -1,0 +1,26 @@
+---
+spring:
+  datasource:
+    source:
+      url: "jdbc:postgresql://${SOURCE_DB_HOST:dev-source-db}:${SOURCE_DB_PORT:5432}/${SOURCE_DB_NAME:reconciliation_source}"
+      username: "${SOURCE_DB_USER:dev_user}"
+      password: "${SOURCE_DB_PASSWORD:#{T(java.lang.System).getenv('SOURCE_DB_PASSWORD')}}"
+      driver-class-name: "org.postgresql.Driver"
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 3
+    target:
+      url: "jdbc:postgresql://${TARGET_DB_HOST:dev-target-db}:${TARGET_DB_PORT:5432}/${TARGET_DB_NAME:reconciliation_target}"
+      username: "${TARGET_DB_USER:dev_user}"
+      password: "${TARGET_DB_PASSWORD:#{T(java.lang.System).getenv('TARGET_DB_PASSWORD')}}"
+      driver-class-name: "org.postgresql.Driver"
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 3
+server:
+  port: 8080
+logging:
+  level:
+    root: "INFO"
+    com.reconcile: "INFO"
+    org.springframework.web: "INFO"

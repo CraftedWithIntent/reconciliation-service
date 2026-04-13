@@ -1,0 +1,32 @@
+---
+spring:
+  datasource:
+    source:
+      url: "jdbc:postgresql://${SOURCE_DB_HOST:qa-source-db}:${SOURCE_DB_PORT:5432}/${SOURCE_DB_NAME:reconciliation_source}"
+      username: "${SOURCE_DB_USER:qa_user}"
+      password: "${SOURCE_DB_PASSWORD:#{T(java.lang.System).getenv('SOURCE_DB_PASSWORD')}}"
+      driver-class-name: "org.postgresql.Driver"
+      hikari:
+        maximum-pool-size: 15
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+    target:
+      url: "jdbc:postgresql://${TARGET_DB_HOST:qa-target-db}:${TARGET_DB_PORT:5432}/${TARGET_DB_NAME:reconciliation_target}"
+      username: "${TARGET_DB_USER:qa_user}"
+      password: "${TARGET_DB_PASSWORD:#{T(java.lang.System).getenv('TARGET_DB_PASSWORD')}}"
+      driver-class-name: "org.postgresql.Driver"
+      hikari:
+        maximum-pool-size: 15
+        minimum-idle: 5
+        connection-timeout: 20000
+        idle-timeout: 600000
+        max-lifetime: 1800000
+server:
+  port: 8080
+logging:
+  level:
+    root: "WARN"
+    com.reconcile: "INFO"
+    org.springframework.web: "WARN"

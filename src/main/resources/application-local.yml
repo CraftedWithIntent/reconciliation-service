@@ -1,0 +1,29 @@
+---
+spring:
+  datasource:
+    source:
+      url: "jdbc:postgresql://localhost:5432/reconciliation_source"
+      username: "postgres"
+      password: "postgres"
+      driver-class-name: "org.postgresql.Driver"
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 2
+    target:
+      url: "jdbc:postgresql://localhost:5432/reconciliation_target"
+      username: "postgres"
+      password: "postgres"
+      driver-class-name: "org.postgresql.Driver"
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 2
+server:
+  port: 8080
+logging:
+  level:
+    root: "INFO"
+    com.reconcile: "DEBUG"
+    org.springframework.web: "DEBUG"
+    org.hibernate.SQL: "DEBUG"
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
