@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.1.5'
     id 'io.spring.dependency-management' version '1.1.3'
     id 'com.diffplug.spotless' version '6.22.0'
+    id 'jacoco'
 }
 
 group = 'com.reconcile'
@@ -99,6 +100,7 @@ tasks.named('test') {
     useJUnitPlatform {
         excludeTags 'integration'
     }
+    finalizedBy jacocoTestReport
 }
 
 // Task to run integration tests only (requires Docker)
@@ -158,6 +160,31 @@ spotless {
         target '**/*.json'
         jackson()
         endWithNewline()
+    }
+}
+
+// JaCoCo - Code Coverage
+jacoco {
+    toolVersion = '0.8.10'
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/config/**',
+                    '**/dto/**',
+                    '**/entity/**',
+                    '**/Application.class',
+                    '**/Application$*.class'
+            ])
+        }))
     }
 }
 
